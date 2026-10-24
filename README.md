@@ -19,3 +19,11 @@ Fazendo outra altração no readme
 Modificando no origin
 
 modificando no main local 1
+
+
+## Como verificar a versão do git
+
+```bash
+git --version
+
+```
