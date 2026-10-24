@@ -12,3 +12,6 @@ Agora testando comandos no Git
 
 
 
+Esse é um teste para fazer um pull no git vscode
+
+Fazendo outra altração no readme
