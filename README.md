@@ -32,3 +32,10 @@ git --version
 ```bash
 git switch nova-funcionalidade
 ```
+
+## Como Adicionar no Indice
+
+```bash
+git add   #nome arquivo
+git add . #todos os arquivos
+```
