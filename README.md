@@ -48,3 +48,5 @@ teste nova-funcionalidade
 teste ajuste-local
 
 commit 1 na branch testes-commits
+
+commit 2 na branch testes-commits
