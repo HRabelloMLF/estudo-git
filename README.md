@@ -39,6 +39,6 @@ git add . #todos os arquivos
 
 ```bash
 git branch                  #Mostra as branchs e branch selecionada
-git branch -c nova-feature  #Criar a branch e ja entra nela 
+git switch -c nova-feature  #Criar a branch e ja entra nela 
 git switch nova-feature     #Seleciona a branch
 ```
