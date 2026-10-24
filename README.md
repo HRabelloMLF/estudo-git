@@ -58,3 +58,6 @@ commit 1 na branch teste-tres-commits
 commit 2 na branch teste-tres-commits
 
 commit 2 na branch teste-tres-commits
+
+
+analise de commit local
