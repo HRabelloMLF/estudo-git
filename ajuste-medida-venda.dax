@@ -1,1 +1,1 @@
-=SUM( ft_vendas[vl_venda_bruta])
+=SUM( ft_vendas[vl_venda_bruto] ) - SUM( ft_vendas[vl_desconto] )
