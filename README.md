@@ -42,3 +42,5 @@ git branch                  #Mostra as branchs e branch selecionada
 git switch -c nova-feature  #Criar a branch e ja entra nela 
 git switch nova-feature     #Seleciona a branch
 ```
+
+teste nova-funcionalidade
