@@ -27,3 +27,8 @@ modificando no main local 1
 git --version
 
 ```
+## Como trocar a branc
+
+```bash
+git switch nova-funcionalidade
+```
