@@ -46,3 +46,5 @@ git switch nova-feature     #Seleciona a branch
 teste nova-funcionalidade
 
 teste ajuste-local
+
+commit 1 na branch testes-commits
