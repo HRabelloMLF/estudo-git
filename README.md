@@ -50,3 +50,11 @@ teste ajuste-local
 commit 1 na branch testes-commits
 
 commit 2 na branch testes-commits
+
+
+
+commit 1 na branch teste-tres-commits
+
+commit 2 na branch teste-tres-commits
+
+commit 2 na branch teste-tres-commits
