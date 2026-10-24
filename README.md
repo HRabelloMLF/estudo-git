@@ -60,3 +60,5 @@ commit 2 na branch teste-tres-commits
 commit 2 na branch teste-tres-commits
 
 ## testar exclusao automatica de um branch
+
+    analise de historico branch
