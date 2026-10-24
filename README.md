@@ -27,15 +27,18 @@ modificando no main local 1
 git --version
 
 ```
-## Como trocar a branc
-
-```bash
-git switch nova-funcionalidade
-```
 
 ## Como Adicionar no Indice
 
 ```bash
 git add   #nome arquivo
 git add . #todos os arquivos
+```
+
+## Trabalhando com Branch
+
+```bash
+git branch                  #Mostra as branchs e branch selecionada
+git branch -c nova-feature  #Criar a branch e ja entra nela 
+git switch nova-feature     #Seleciona a branch
 ```
