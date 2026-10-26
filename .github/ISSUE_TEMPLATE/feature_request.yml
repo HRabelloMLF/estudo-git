@@ -1,0 +1,72 @@
+name: Sugerir funcionalidade
+description: Sugira uma ideia ou melhoria para este projeto
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado pela sugestão! Preencha os campos abaixo. Os marcados com * são obrigatórios.
+
+  - type: textarea
+    id: problema
+    attributes:
+      label: Problema relacionado
+      description: A sugestão resolve algum problema?
+      placeholder: "Ex.: Hoje não consigo ver ... quando ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solucao
+    attributes:
+      label: Solução proposta
+      description: Descreva de forma clara e objetiva o que você gostaria que fosse feito.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternativas
+    attributes:
+      label: Alternativas consideradas
+      description: Outras soluções ou contornos que você já avaliou.
+    validations:
+      required: false
+
+  - type: input
+    id: quem
+    attributes:
+      label: Quem usa
+      description: Área, cliente ou perfil de usuário que vai se beneficiar.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: prioridade
+    attributes:
+      label: Prioridade
+      options:
+        - Alta - necessário para uma entrega próxima
+        - Média - importante, sem prazo definido
+        - Baixa - seria bom ter
+    validations:
+      required: true
+
+  - type: textarea
+    id: aceite
+    attributes:
+      label: Critérios de aceite
+      description: Como saber que a entrega está pronta.
+      value: |
+        - [ ]
+        - [ ]
+    validations:
+      required: true
+
+  - type: textarea
+    id: adicionais
+    attributes:
+      label: Informações adicionais
+      description: Mockups, prints, exemplos ou qualquer outro contexto.
+    validations:
+      required: false
