@@ -66,4 +66,6 @@ analise de commit local
     analise de historico branch
 
 
-Testando template Pull Request no Github
+Testando template Issue no Github
+
+testando template Pull Request no Github
