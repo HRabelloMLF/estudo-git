@@ -1,30 +1,48 @@
-## Descrição
+## O que muda
+<!-- Resumo em 1–3 linhas. O título do PR segue o padrão: tipo(escopo): descrição -->
 
-<!-- Descreva de forma clara e objetiva o que foi alterado neste PR e por quê. -->
 
-## Tipo de mudança
+## Por quê
+<!-- Contexto: problema, pedido do cliente ou regra de negócio que motivou a mudança -->
 
-<!-- Marque com um "x" a opção que se aplica, ex.: [x] -->
-
-- [ ] 🐛 Correção de bug (mudança que corrige um problema)
-- [ ] ✨ Nova feature (mudança que adiciona uma funcionalidade)
-- [ ] 📝 Melhoria na documentação (README, instruções, comentários)
 
 ## Issue relacionada
+<!-- "Closes #N" fecha a issue no merge; "Refs #N" só cita. Linha sem espaços no início -->
+Closes #
 
-<!-- Se houver, informe a issue vinculada. Ex.: Closes #123 -->
+## Tipo de mudança
+- [ ] fix: correção de erro
+- [ ] feat: funcionalidade nova
+- [ ] perf: ganho de performance
+- [ ] refactor: reorganização sem mudar resultado
+- [ ] docs: documentação
+- [ ] Breaking change: pode quebrar relatórios ou consultas que dependem deste modelo
 
-## Como testar
+## Onde foi alterado
+<!-- Medidas, tabelas, consultas, páginas ou visuais afetados -->
+- 
 
-<!-- Descreva os passos para validar a mudança. -->
+## Como foi validado
+<!-- Passos que o revisor pode repetir para conferir -->
+1. 
+2. 
 
-1.
-2.
-3.
+| Verificação | Antes | Depois |
+|---|---|---|
+| Valor conferido com a fonte (ERP, SQL) |  |  |
+| Tempo no Performance Analyzer |  |  |
+
+## Evidências
+<!-- Prints do visual ou do resultado. Sem dados sensíveis de clientes -->
+
 
 ## Checklist
+- [ ] Revisei o diff na aba "Files changed"
+- [ ] Título no padrão Conventional Commits
+- [ ] Valores conferidos com a fonte
+- [ ] Atualização (refresh) testada sem erro
+- [ ] Sem senhas, tokens, strings de conexão ou dados de clientes
+- [ ] Documentação atualizada, se necessário
 
-- [ ] Revisei meu próprio código antes de abrir o PR
-- [ ] A branch está atualizada com a `main`
-- [ ] Atualizei a documentação, se necessário
-- [ ] Testei as alterações localmente
+## Notas para o revisor
+<!-- Pontos de atenção, dúvidas, o que ficou para depois -->
