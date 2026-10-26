@@ -64,3 +64,6 @@ analise de commit local
 ## testar exclusao automatica de um branch
 
     analise de historico branch
+
+
+Testando template
