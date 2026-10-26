@@ -1,0 +1,105 @@
+name: Relatar bug
+description: Crie um relato para nos ajudar a corrigir um problema
+title: "fix: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por relatar o problema! Preencha os campos abaixo. Os marcados com * são obrigatórios.
+        **Não inclua senhas, tokens, strings de conexão ou dados sensíveis de clientes.**
+
+  - type: textarea
+    id: descricao
+    attributes:
+      label: Descrição do bug
+      description: Descreva de forma clara e objetiva qual é o problema.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduzir
+    attributes:
+      label: Como reproduzir
+      description: Passos para reproduzir o comportamento.
+      placeholder: |
+        1. Abra o relatório/página '...'
+        2. Aplique o filtro '...'
+        3. Veja o valor em '...'
+    validations:
+      required: true
+
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Comportamento esperado
+      description: O que deveria acontecer ou qual valor deveria aparecer.
+    validations:
+      required: true
+
+  - type: textarea
+    id: atual
+    attributes:
+      label: Comportamento atual
+      description: O que acontece de fato. Se for valor errado, informe o valor da fonte (ERP, SQL) para comparar.
+    validations:
+      required: true
+
+  - type: input
+    id: onde
+    attributes:
+      label: Onde ocorre
+      description: Medidas, tabelas, consultas, páginas ou visuais afetados.
+      placeholder: "Ex.: medida [Vendas Líquidas], página Resumo"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: ambiente
+    attributes:
+      label: Ambiente
+      description: Onde o problema acontece?
+      multiple: true
+      options:
+        - Power BI Desktop
+        - Power BI Serviço (workspace)
+        - App do Power BI
+        - Celular
+    validations:
+      required: true
+
+  - type: input
+    id: versao
+    attributes:
+      label: Versão do Power BI Desktop
+      description: Em Ajuda → Sobre. Deixe em branco se não usar o Desktop.
+      placeholder: "Ex.: 2.140.0"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: impacto
+    attributes:
+      label: Impacto
+      options:
+        - Alto - bloqueia o uso ou mostra valor errado para a diretoria
+        - Médio - atrapalha, mas existe contorno
+        - Baixo - detalhe visual ou de texto
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidencias
+    attributes:
+      label: Evidências
+      description: Arraste prints do visual ou da mensagem de erro para cá.
+    validations:
+      required: false
+
+  - type: textarea
+    id: adicionais
+    attributes:
+      label: Informações adicionais
+      description: Qualquer outro contexto sobre o problema.
+    validations:
+      required: false
