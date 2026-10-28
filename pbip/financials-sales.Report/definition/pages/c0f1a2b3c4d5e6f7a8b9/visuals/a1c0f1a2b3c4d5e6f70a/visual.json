@@ -13,25 +13,6 @@
     "visualType": "pivotTable",
     "query": {
       "queryState": {
-        "Rows": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "dim_produto"
-                    }
-                  },
-                  "Property": "nm_produto"
-                }
-              },
-              "queryRef": "dim_produto.nm_produto",
-              "nativeQueryRef": "nm_produto",
-              "displayName": "Produto"
-            }
-          ]
-        },
         "Columns": {
           "projections": [
             {
@@ -47,7 +28,28 @@
               },
               "queryRef": "gc_inteligencia_tempo.ct_periodo",
               "nativeQueryRef": "ct_periodo",
+              "active": true,
               "displayName": "Período"
+            }
+          ]
+        },
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_produto"
+                    }
+                  },
+                  "Property": "nm_produto"
+                }
+              },
+              "queryRef": "dim_produto.nm_produto",
+              "nativeQueryRef": "nm_produto",
+              "active": true,
+              "displayName": "Produto"
             }
           ]
         },

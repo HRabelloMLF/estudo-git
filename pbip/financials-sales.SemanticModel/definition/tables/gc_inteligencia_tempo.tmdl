@@ -1,5 +1,6 @@
 /// Variantes temporais de qualquer medida: Atual, YTD, Ano Anterior e Var % AA
 table gc_inteligencia_tempo
+	lineageTag: 692acf3e-add3-48cc-8eba-665b7eb4b59b
 
 	calculationGroup
 		precedence: 10
@@ -11,17 +12,18 @@ table gc_inteligencia_tempo
 		calculationItem 'Ano Anterior' = CALCULATE ( SELECTEDMEASURE (), SAMEPERIODLASTYEAR ( dim_calendario[pk_data] ) )
 
 		/// Variação % sobre o ano anterior; sobrescreve o formato da medida selecionada
-		calculationItem 'Var % AA' = ```
+		calculationItem 'Var % AA' =
 				VAR __Atual = SELECTEDMEASURE ()
 				VAR __Anterior = CALCULATE ( SELECTEDMEASURE (), SAMEPERIODLASTYEAR ( dim_calendario[pk_data] ) )
 				RETURN
 					IF ( NOT ISBLANK ( __Anterior ), DIVIDE ( __Atual - __Anterior, __Anterior ) )
-				```
+
 			formatStringDefinition = "+#,0.0%;-#,0.0%;#,0.0%"
 
 	/// Visão temporal aplicada às medidas
 	column ct_periodo
 		dataType: string
+		lineageTag: cdcf9752-0ba2-427b-bd81-0cae690f96f0
 		summarizeBy: none
 		sourceColumn: Name
 		sortByColumn: Ordinal
@@ -29,7 +31,9 @@ table gc_inteligencia_tempo
 	column Ordinal
 		dataType: int64
 		isHidden
+		lineageTag: 0e60a75f-d79d-4391-904b-345145ec498c
 		summarizeBy: none
 		sourceColumn: Ordinal
 
 	partition gc_inteligencia_tempo = calculationGroup
+

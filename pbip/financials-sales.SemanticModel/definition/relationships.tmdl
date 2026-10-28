@@ -17,3 +17,4 @@ relationship a1e0c1d2-0004-4c00-9000-000000000004
 relationship a1e0c1d2-0005-4c00-9000-000000000005
 	fromColumn: ft_financeiro.fk_faixa_desconto
 	toColumn: dim_faixa_desconto.pk_faixa_desconto
+

@@ -1,19 +1,22 @@
 /// Fato de metas de lucro definidas pela diretoria. Grão: uma linha por ano
 table ft_metas
+	lineageTag: 0c77719d-b332-4d17-9df7-67974b91894d
 
 	column nu_ano
 		dataType: int64
-		formatString: 0
 		isHidden
+		formatString: 0
 		isAvailableInMdx: false
+		lineageTag: a509949e-5d1d-455f-b3f0-894cb3ab9ece
 		summarizeBy: none
 		sourceColumn: nu_ano
 
 	column vl_meta_lucro
 		dataType: decimal
-		formatString: \$#,0;(\$#,0);\$#,0
 		isHidden
+		formatString: \$#,0;(\$#,0);\$#,0
 		isAvailableInMdx: false
+		lineageTag: 22bb1167-7430-4f82-996e-32183256835d
 		summarizeBy: none
 		sourceColumn: vl_meta_lucro
 
@@ -25,3 +28,4 @@ table ft_metas
 					Source = #table(type table [nu_ano = Int64.Type, vl_meta_lucro = Currency.Type], {{2013, 3800000}, {2014, 14000000}})
 				in
 					Source
+

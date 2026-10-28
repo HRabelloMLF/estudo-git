@@ -5,8 +5,8 @@
     "x": 519.85559566787,
     "y": 145.55956678700363,
     "z": 0,
-    "height": 635.9566787003611,
-    "width": 798.8447653429604,
+    "height": 635.95667870036107,
+    "width": 798.84476534296039,
     "tabOrder": 0
   },
   "visual": {
@@ -28,6 +28,7 @@
               },
               "queryRef": "dim_pais.nm_pais",
               "nativeQueryRef": "nm_pais",
+              "active": true,
               "displayName": "País"
             }
           ]

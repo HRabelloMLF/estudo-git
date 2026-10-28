@@ -1,7 +1,7 @@
 model Model
 	culture: pt-BR
-	discourageImplicitMeasures
 	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
 	sourceQueryCulture: pt-BR
 	valueFilterBehavior: independent
 	dataAccessOptions
@@ -36,7 +36,7 @@ annotation __PBI_TimeIntelligenceEnabled = 0
 
 annotation PBI_QueryOrder = ["path_arquivo_financeiro","fx_gera_calendario","src_financeiro","stg_financeiro","dim_calendario","dim_produto","dim_pais","dim_segmento","dim_faixa_desconto","ft_financeiro","ft_metas"]
 
-annotation PBI_ProTooling = ["DevMode"]
+annotation PBI_ProTooling = ["DevMode","MCP-PBIModeling"]
 
 ref table ft_financeiro
 ref table ft_metas
@@ -50,3 +50,4 @@ ref table gc_inteligencia_tempo
 ref table pc_dimensao_analise
 
 ref cultureInfo pt-BR
+

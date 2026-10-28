@@ -27,8 +27,9 @@
                 }
               },
               "queryRef": "dim_segmento.nm_segmento",
-              "nativeQueryRef": "nm_segmento",
-              "active": true
+              "nativeQueryRef": "Segmento",
+              "active": true,
+              "displayName": "Segmento"
             }
           ],
           "fieldParameters": [

@@ -1,5 +1,6 @@
 /// Caminho do arquivo de amostra Financial Sample.xlsx (instalado com o Power BI Desktop)
 expression path_arquivo_financeiro = "C:\Program Files\WindowsApps\Microsoft.MicrosoftPowerBIDesktop_2.159.883.0_x64__8wekyb3d8bbwe\bin\SampleData\Financial Sample.xlsx" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 07f693ac-aeeb-4fce-9c09-4414f33b2bb5
 	queryGroup: Caminhos
 
 /// Gera um calendário diário contínuo entre duas datas
@@ -18,6 +19,7 @@ expression fx_gera_calendario =
 			comRotuloTrimestre = Table.AddColumn(comTrimestre, "ct_trimestre", each "T" & Text.From([nu_trimestre]), type text)
 		in
 			comRotuloTrimestre
+	lineageTag: b3caa379-4aa2-48de-ba69-a4298103e877
 	queryGroup: Funções
 
 /// Camada 1: tabela "financials" do Excel, sem transformação
@@ -27,6 +29,7 @@ expression src_financeiro =
 			tabelaFinanceiro = Source{[Item = "financials", Kind = "Table"]}[Data]
 		in
 			tabelaFinanceiro
+	lineageTag: 7744aa9b-2c2e-4bbd-8df1-78b28bed3c3d
 	queryGroup: Fontes
 
 /// Camada 2: colunas renomeadas para a convenção, tipadas e com textos limpos
@@ -39,4 +42,6 @@ expression stg_financeiro =
 			textosLimpos = Table.TransformColumns(tiposAjustados, {{"nm_segmento", Text.Trim, type text}, {"nm_pais", Text.Trim, type text}, {"nm_produto", Text.Trim, type text}, {"nm_faixa_desconto", Text.Trim, type text}})
 		in
 			textosLimpos
+	lineageTag: 05b90aaf-b9d7-491a-badc-c190d1abfb9e
 	queryGroup: Staging
+

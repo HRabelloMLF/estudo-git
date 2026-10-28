@@ -1,17 +1,20 @@
 /// Dimensão de faixas de desconto, na ordem do menor para o maior desconto
 table dim_faixa_desconto
+	lineageTag: 0e2be8e1-140d-4b2e-9b70-de350eed72d0
 
 	column pk_faixa_desconto
-		isKey
 		dataType: int64
-		formatString: 0
 		isHidden
+		isKey
+		formatString: 0
+		lineageTag: b35059c7-dbde-402b-8531-b811e3f5e2eb
 		summarizeBy: none
 		sourceColumn: pk_faixa_desconto
 
 	/// Faixa de desconto concedido na venda
 	column nm_faixa_desconto
 		dataType: string
+		lineageTag: 6fbd9f5d-9adb-45bb-8931-1a700b5a9403
 		summarizeBy: none
 		sourceColumn: nm_faixa_desconto
 		sortByColumn: pk_faixa_desconto
@@ -28,3 +31,4 @@ table dim_faixa_desconto
 					colunasReordenadas = Table.ReorderColumns(chaveAdicionada, {"pk_faixa_desconto", "nm_faixa_desconto"})
 				in
 					colunasReordenadas
+

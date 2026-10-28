@@ -1,18 +1,21 @@
 /// Dimensão de segmentos de cliente (uma linha por segmento)
 table dim_segmento
+	lineageTag: 7235ada3-8a79-4db1-bc82-30d841322786
 
 	column pk_segmento
-		isKey
 		dataType: int64
-		formatString: 0
 		isHidden
+		isKey
+		formatString: 0
 		isAvailableInMdx: false
+		lineageTag: a41fb8bf-a137-448e-91ed-53886cfa453b
 		summarizeBy: none
 		sourceColumn: pk_segmento
 
 	/// Segmento de cliente
 	column nm_segmento
 		dataType: string
+		lineageTag: 130a8f1a-20c6-4c7a-abf2-706090bc31e5
 		summarizeBy: none
 		sourceColumn: nm_segmento
 
@@ -28,3 +31,4 @@ table dim_segmento
 					colunasReordenadas = Table.ReorderColumns(chaveAdicionada, {"pk_segmento", "nm_segmento"})
 				in
 					colunasReordenadas
+
