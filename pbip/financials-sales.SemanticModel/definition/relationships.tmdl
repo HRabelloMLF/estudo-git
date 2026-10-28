@@ -1,0 +1,20 @@
+relationship a1e0c1d2-0001-4c00-9000-000000000001
+	fromColumn: ft_financeiro.fk_data_venda
+	toColumn: dim_calendario.pk_data
+
+relationship a1e0c1d2-0002-4c00-9000-000000000002
+	fromColumn: ft_financeiro.fk_produto
+	toColumn: dim_produto.pk_produto
+
+relationship a1e0c1d2-0003-4c00-9000-000000000003
+	fromColumn: ft_financeiro.fk_pais
+	toColumn: dim_pais.pk_pais
+
+relationship a1e0c1d2-0004-4c00-9000-000000000004
+	fromColumn: ft_financeiro.fk_segmento
+	toColumn: dim_segmento.pk_segmento
+
+relationship a1e0c1d2-0005-4c00-9000-000000000005
+	fromColumn: ft_financeiro.fk_faixa_desconto
+	toColumn: dim_faixa_desconto.pk_faixa_desconto
+

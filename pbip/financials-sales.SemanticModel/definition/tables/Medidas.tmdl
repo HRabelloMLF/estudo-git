@@ -1,0 +1,102 @@
+/// Tabela dedicada às medidas do relatório
+table Medidas
+	lineageTag: 42d586c3-54c4-45af-95ae-879c6ac0ba08
+
+	/// Receita antes dos descontos
+	measure 'Receita Bruta' = SUM ( ft_financeiro[vl_receita_bruta] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 01. Receita
+		lineageTag: 49427f80-bc0a-49f5-a934-67ab9ce7e001
+
+	/// Valor total de descontos concedidos
+	measure Descontos = SUM ( ft_financeiro[vl_desconto] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 01. Receita
+		lineageTag: c82d06c2-5b73-4698-943f-6edf92db6360
+
+	/// Receita após descontos
+	measure 'Receita Líquida' = SUM ( ft_financeiro[vl_receita_liquida] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 01. Receita
+		lineageTag: 638387a5-a4bc-45e1-a759-9d0383379f2b
+
+	/// Média da receita líquida entre os países do contexto
+	measure 'Receita Média por País' = AVERAGEX ( VALUES ( dim_pais[nm_pais] ), [Receita Líquida] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 01. Receita
+		lineageTag: 504d8dab-0084-4ebf-9dc9-c1037dbcd600
+
+	/// Custo dos produtos vendidos
+	measure 'Custo (CPV)' = SUM ( ft_financeiro[vl_custo] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 02. Resultado
+		lineageTag: e3306b7a-8c53-4bc3-89c9-3485656370ca
+
+	/// Lucro bruto (receita líquida menos custo)
+	measure Lucro = SUM ( ft_financeiro[vl_lucro] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 02. Resultado
+		lineageTag: cada1b4e-a311-44a4-83ee-5cf0e2bbd65c
+
+	/// Lucro sobre a receita líquida
+	measure 'Margem %' = DIVIDE ( [Lucro], [Receita Líquida] )
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		displayFolder: 02. Resultado
+		lineageTag: 199c056c-e70b-4001-8c4e-7ccd0e30890d
+
+	/// Quantidade de unidades vendidas
+	measure 'Unidades Vendidas' = SUM ( ft_financeiro[qt_unidades_vendidas] )
+		formatString: #,0
+		displayFolder: 03. Volume
+		lineageTag: edbece3c-8ef3-4703-8c95-a6f192663931
+
+	/// Receita líquida por unidade vendida
+	measure 'Preço Médio Unitário' = DIVIDE ( [Receita Líquida], [Unidades Vendidas] )
+		formatString: \$#,0.00
+		displayFolder: 03. Volume
+		lineageTag: 3cb5da82-02da-4ea4-bbeb-0cfb9c7befa3
+
+	/// Receita líquida no mesmo período do ano anterior
+	measure 'Receita AA' = CALCULATE ( [Receita Líquida], SAMEPERIODLASTYEAR ( dim_calendario[pk_data] ) )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 04. Tempo
+		lineageTag: d97ab006-2c05-40d0-b92a-f57c788515a8
+
+	/// Variação da receita líquida sobre o ano anterior
+	measure 'Var % Receita AA' =
+			VAR __Atual = [Receita Líquida]
+			VAR __Anterior = [Receita AA]
+			RETURN
+				IF ( NOT ISBLANK ( __Anterior ), DIVIDE ( __Atual - __Anterior, __Anterior ) )
+		formatString: +#,0.0%;-#,0.0%;#,0.0%
+		displayFolder: 04. Tempo
+		lineageTag: cc0bb9a8-d904-4330-bba0-13e75de5d810
+
+	/// Meta de lucro dos anos no contexto
+	measure 'Meta Lucro' =
+			CALCULATE (
+				SUM ( ft_metas[vl_meta_lucro] ),
+				TREATAS ( VALUES ( dim_calendario[nu_ano] ), ft_metas[nu_ano] )
+			)
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 05. Metas
+		lineageTag: 4c611ae3-f97e-40f9-90a6-4896caedce6e
+
+	/// Lucro realizado sobre a meta de lucro
+	measure 'Atingimento Meta %' = DIVIDE ( [Lucro], [Meta Lucro] )
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		displayFolder: 05. Metas
+		lineageTag: 7ca9a5ad-a82f-4540-b474-17bbe55e6cb9
+
+	column Medidas
+		isHidden
+		isAvailableInMdx: false
+		lineageTag: 73ecf79a-f5b8-4268-a2cc-e5c3f1caf5f2
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Medidas]
+
+	partition Medidas = calculated
+		mode: import
+		source = SELECTCOLUMNS ( { 1 }, "Medidas", ''[Value] )
+

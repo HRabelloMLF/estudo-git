@@ -1,0 +1,34 @@
+/// Dimensão de países onde a venda ocorreu (uma linha por país)
+table dim_pais
+	lineageTag: c148ec4f-e708-44da-9bf4-dee5e95b697b
+
+	column pk_pais
+		dataType: int64
+		isHidden
+		isKey
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: b127be12-0438-4e65-887f-4a9652866ee3
+		summarizeBy: none
+		sourceColumn: pk_pais
+
+	/// Nome do país
+	column nm_pais
+		dataType: string
+		lineageTag: e2979e0b-e97f-4712-92a9-d930b0c29988
+		summarizeBy: none
+		sourceColumn: nm_pais
+
+	partition dim_pais = m
+		mode: import
+		queryGroup: Dimensões
+		source =
+				let
+					Source = stg_financeiro,
+					paisesDistintos = Table.Distinct(Table.SelectColumns(Source, {"nm_pais"})),
+					paisesOrdenados = Table.Sort(paisesDistintos, {{"nm_pais", Order.Ascending}}),
+					chaveAdicionada = Table.AddIndexColumn(paisesOrdenados, "pk_pais", 1, 1, Int64.Type),
+					colunasReordenadas = Table.ReorderColumns(chaveAdicionada, {"pk_pais", "nm_pais"})
+				in
+					colunasReordenadas
+

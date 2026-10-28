@@ -1,0 +1,81 @@
+/// Calendário diário contínuo dos anos com vendas; base de toda inteligência de tempo
+table dim_calendario
+	lineageTag: d6697e33-d37e-4cdf-9cb3-feeb33860b41
+	dataCategory: Time
+
+	/// Data (chave do calendário)
+	column pk_data
+		dataType: dateTime
+		isKey
+		formatString: Short Date
+		lineageTag: 8b4b157e-7c63-4dcb-8f5c-8a4112c0b9a0
+		summarizeBy: none
+		sourceColumn: pk_data
+
+	/// Ano
+	column nu_ano
+		dataType: int64
+		formatString: 0
+		lineageTag: ab4fa0a2-1c3b-4eba-b62c-40e67c992540
+		summarizeBy: none
+		sourceColumn: nu_ano
+
+	column nu_mes
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 3b7846c8-636e-4e7c-b44b-a10e4ff5c9b3
+		summarizeBy: none
+		sourceColumn: nu_mes
+
+	/// Mês abreviado (jan, fev...)
+	column nm_mes
+		dataType: string
+		lineageTag: 71e941d0-00bc-4d04-a52f-6d0e1cbfadae
+		summarizeBy: none
+		sourceColumn: nm_mes
+		sortByColumn: nu_mes
+
+	column nu_ano_mes
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 7fa87cfd-be49-4224-8897-0ee984733a83
+		summarizeBy: none
+		sourceColumn: nu_ano_mes
+
+	/// Mês e ano (jan/14)
+	column ct_mes_ano
+		dataType: string
+		lineageTag: 9fc765b8-4bb5-4913-bfcf-04d6f1e39d97
+		summarizeBy: none
+		sourceColumn: ct_mes_ano
+		sortByColumn: nu_ano_mes
+
+	column nu_trimestre
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 1e9b0dfb-119f-427d-9875-b3d69765e8f2
+		summarizeBy: none
+		sourceColumn: nu_trimestre
+
+	/// Trimestre (T1 a T4)
+	column ct_trimestre
+		dataType: string
+		lineageTag: 4920188f-3e69-43ae-a6a2-6575f1d4d4b3
+		summarizeBy: none
+		sourceColumn: ct_trimestre
+		sortByColumn: nu_trimestre
+
+	partition dim_calendario = m
+		mode: import
+		queryGroup: Dimensões
+		source =
+				let
+					__DataInicial = #date(Date.Year(List.Min(stg_financeiro[dt_venda])), 1, 1),
+					__DataFinal = #date(Date.Year(List.Max(stg_financeiro[dt_venda])), 12, 31),
+					Source = fx_gera_calendario(__DataInicial, __DataFinal)
+				in
+					Source
+

@@ -1,0 +1,123 @@
+/// Fato de vendas. Grão: uma linha por produto, país, segmento e mês de venda
+table ft_financeiro
+	lineageTag: f4542910-758e-4163-9866-278a753cbce1
+
+	column fk_data_venda
+		dataType: dateTime
+		isHidden
+		formatString: Short Date
+		isAvailableInMdx: false
+		lineageTag: c90e051f-10a6-4cdf-906d-4a778413cc3c
+		summarizeBy: none
+		sourceColumn: fk_data_venda
+
+	column fk_produto
+		dataType: int64
+		isHidden
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: 9cf4fe9b-6859-4908-b432-f5d578685de0
+		summarizeBy: none
+		sourceColumn: fk_produto
+
+	column fk_pais
+		dataType: int64
+		isHidden
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: 068ca457-0cc3-4eb2-8e86-57d857483b5f
+		summarizeBy: none
+		sourceColumn: fk_pais
+
+	column fk_segmento
+		dataType: int64
+		isHidden
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: e2bbd523-d67e-4560-b41e-546d93b828bc
+		summarizeBy: none
+		sourceColumn: fk_segmento
+
+	column fk_faixa_desconto
+		dataType: int64
+		isHidden
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: ba1def2e-8976-4d71-b240-d1ea282a080d
+		summarizeBy: none
+		sourceColumn: fk_faixa_desconto
+
+	column qt_unidades_vendidas
+		dataType: decimal
+		isHidden
+		formatString: #,0
+		isAvailableInMdx: false
+		lineageTag: 482a1aa2-34c9-4eb2-ae67-9078f6cf5039
+		summarizeBy: none
+		sourceColumn: qt_unidades_vendidas
+
+	column vl_receita_bruta
+		dataType: decimal
+		isHidden
+		formatString: \$#,0;(\$#,0);\$#,0
+		isAvailableInMdx: false
+		lineageTag: 7972cbee-dc13-4791-a731-28fff03703bd
+		summarizeBy: none
+		sourceColumn: vl_receita_bruta
+
+	column vl_desconto
+		dataType: decimal
+		isHidden
+		formatString: \$#,0;(\$#,0);\$#,0
+		isAvailableInMdx: false
+		lineageTag: 70cad7cb-378b-4fcf-846a-b3cdee99be6d
+		summarizeBy: none
+		sourceColumn: vl_desconto
+
+	column vl_receita_liquida
+		dataType: decimal
+		isHidden
+		formatString: \$#,0;(\$#,0);\$#,0
+		isAvailableInMdx: false
+		lineageTag: 28431ade-9756-4716-8390-05fa10e4578b
+		summarizeBy: none
+		sourceColumn: vl_receita_liquida
+
+	column vl_custo
+		dataType: decimal
+		isHidden
+		formatString: \$#,0;(\$#,0);\$#,0
+		isAvailableInMdx: false
+		lineageTag: e9321c6b-32ee-4268-ade9-0088e0d42b31
+		summarizeBy: none
+		sourceColumn: vl_custo
+
+	column vl_lucro
+		dataType: decimal
+		isHidden
+		formatString: \$#,0;(\$#,0);\$#,0
+		isAvailableInMdx: false
+		lineageTag: 6357b687-c55f-42bc-83b7-18ab55bcf51e
+		summarizeBy: none
+		sourceColumn: vl_lucro
+
+	partition ft_financeiro = m
+		mode: import
+		queryGroup: Fatos
+		source =
+				let
+					Source = stg_financeiro,
+					comProduto = Table.NestedJoin(Source, {"nm_produto"}, dim_produto, {"nm_produto"}, "dimProduto", JoinKind.LeftOuter),
+					chaveProduto = Table.ExpandTableColumn(comProduto, "dimProduto", {"pk_produto"}, {"fk_produto"}),
+					comPais = Table.NestedJoin(chaveProduto, {"nm_pais"}, dim_pais, {"nm_pais"}, "dimPais", JoinKind.LeftOuter),
+					chavePais = Table.ExpandTableColumn(comPais, "dimPais", {"pk_pais"}, {"fk_pais"}),
+					comSegmento = Table.NestedJoin(chavePais, {"nm_segmento"}, dim_segmento, {"nm_segmento"}, "dimSegmento", JoinKind.LeftOuter),
+					chaveSegmento = Table.ExpandTableColumn(comSegmento, "dimSegmento", {"pk_segmento"}, {"fk_segmento"}),
+					comFaixa = Table.NestedJoin(chaveSegmento, {"nm_faixa_desconto"}, dim_faixa_desconto, {"nm_faixa_desconto"}, "dimFaixa", JoinKind.LeftOuter),
+					chaveFaixa = Table.ExpandTableColumn(comFaixa, "dimFaixa", {"pk_faixa_desconto"}, {"fk_faixa_desconto"}),
+					dataRenomeada = Table.RenameColumns(chaveFaixa, {{"dt_venda", "fk_data_venda"}}),
+					colunasSelecionadas = Table.SelectColumns(dataRenomeada, {"fk_data_venda", "fk_produto", "fk_pais", "fk_segmento", "fk_faixa_desconto", "qt_unidades_vendidas", "vl_receita_bruta", "vl_desconto", "vl_receita_liquida", "vl_custo", "vl_lucro"}),
+					tiposChaves = Table.TransformColumnTypes(colunasSelecionadas, {{"fk_produto", Int64.Type}, {"fk_pais", Int64.Type}, {"fk_segmento", Int64.Type}, {"fk_faixa_desconto", Int64.Type}})
+				in
+					tiposChaves
+

@@ -1,0 +1,152 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 922.94663424669318,
+        "y": 228.9427807359736
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 886.38408760338575,
+            "y": 253.21938644944544
+          },
+          "nodeIndex": "Medidas",
+          "nodeLineageTag": "42d586c3-54c4-45af-95ae-879c6ac0ba08",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 337.05204473751945,
+            "y": -50
+          },
+          "nodeIndex": "dim_calendario",
+          "nodeLineageTag": "d6697e33-d37e-4cdf-9cb3-feeb33860b41",
+          "size": {
+            "height": 272,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 172.88667979227,
+            "y": 628.43877289889087
+          },
+          "nodeIndex": "dim_faixa_desconto",
+          "nodeLineageTag": "0e2be8e1-140d-4b2e-9b70-de350eed72d0",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 652.38408760338586,
+            "y": 168.49203464455161
+          },
+          "nodeIndex": "dim_pais",
+          "nodeLineageTag": "c148ec4f-e708-44da-9bf4-dee5e95b697b",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 606.05371994178961,
+            "y": 628.41028185522225
+          },
+          "nodeIndex": "dim_produto",
+          "nodeLineageTag": "5204f7e3-6994-46a1-80e1-7342dce69d42",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 50,
+            "y": 263.5610592584195
+          },
+          "nodeIndex": "dim_segmento",
+          "nodeLineageTag": "7235ada3-8a79-4db1-bc82-30d841322786",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 365.82656480491477,
+            "y": 275.6004921977642
+          },
+          "nodeIndex": "ft_financeiro",
+          "nodeLineageTag": "f4542910-758e-4163-9866-278a753cbce1",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1170.3840876033858,
+            "y": 339.21938644944544
+          },
+          "nodeIndex": "ft_metas",
+          "nodeLineageTag": "0c77719d-b332-4d17-9df7-67974b91894d",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1454.3840876033858,
+            "y": 339.21938644944544
+          },
+          "nodeIndex": "gc_inteligencia_tempo",
+          "nodeLineageTag": "692acf3e-add3-48cc-8eba-665b7eb4b59b",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1738.3840876033858,
+            "y": 327.21938644944544
+          },
+          "nodeIndex": "pc_dimensao_analise",
+          "nodeLineageTag": "301b3e65-0585-4a25-8ee8-6631ff5fbbad",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "Todas as tabelas",
+      "zoomValue": 89.1925905205695,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "Todas as tabelas",
+  "defaultDiagram": "Todas as tabelas"
+}

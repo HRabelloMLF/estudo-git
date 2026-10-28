@@ -1,0 +1,34 @@
+/// Dimensão de faixas de desconto, na ordem do menor para o maior desconto
+table dim_faixa_desconto
+	lineageTag: 0e2be8e1-140d-4b2e-9b70-de350eed72d0
+
+	column pk_faixa_desconto
+		dataType: int64
+		isHidden
+		isKey
+		formatString: 0
+		lineageTag: b35059c7-dbde-402b-8531-b811e3f5e2eb
+		summarizeBy: none
+		sourceColumn: pk_faixa_desconto
+
+	/// Faixa de desconto concedido na venda
+	column nm_faixa_desconto
+		dataType: string
+		lineageTag: 6fbd9f5d-9adb-45bb-8931-1a700b5a9403
+		summarizeBy: none
+		sourceColumn: nm_faixa_desconto
+		sortByColumn: pk_faixa_desconto
+
+	partition dim_faixa_desconto = m
+		mode: import
+		queryGroup: Dimensões
+		source =
+				let
+					Source = stg_financeiro,
+					faixasDistintas = Table.Distinct(Table.SelectColumns(Source, {"nm_faixa_desconto"})),
+					__listaOrdemFaixas = {"None", "Low", "Medium", "High"},
+					chaveAdicionada = Table.AddColumn(faixasDistintas, "pk_faixa_desconto", each List.PositionOf(__listaOrdemFaixas, [nm_faixa_desconto]), Int64.Type),
+					colunasReordenadas = Table.ReorderColumns(chaveAdicionada, {"pk_faixa_desconto", "nm_faixa_desconto"})
+				in
+					colunasReordenadas
+
