@@ -8,7 +8,7 @@ Skills aplicadas: `power-query-m` (convenção e camadas M), `dimensional-modeli
 | Indicador | Antes | Depois |
 |---|---|---|
 | Validador de nomenclatura (`validar_nomenclatura.py`) | 41 erros · 6 avisos | **0 erros · 0 avisos** |
-| BPA (Tabular Editor 2, regras Microsoft) | 88 violações (2 de severidade 3) | ver execução do CI no PR |
+| BPA (Tabular Editor 2, regras Microsoft) | 88 violações (2 de severidade 3) | **0 de severidade 3**; restantes são exceções documentadas abaixo |
 | `powerbi-report-author validate` | 1 erro | **0 erros** |
 | Desenho do modelo | 1 tabela larga + 5 tabelas de apoio | **Modelo estrela**: 2 fatos, 5 dimensões |
 
@@ -65,7 +65,8 @@ Relacionamentos: 5, todos 1:* com filtro único (dimensão → fato), todos ativ
 | `SET_ISAVAILABLEINMDX_TO_FALSE_ON_NON-ATTRIBUTE_COLUMNS` | 🟡 | colunas ocultas | `isAvailableInMdx: false` nas ocultas sem ordenação |
 | `REDUCE_USAGE_OF_CALCULATED_TABLES` | 🟡 | 4 tabelas | Calendário e metas foram para o Power Query; ficaram só `Medidas` e `pc_` (exigidas pelo recurso) |
 | `VISIBLE_OBJECTS_WITH_NO_DESCRIPTION` | 🔵 | tabelas e medidas | Descrição `///` em tabelas, colunas visíveis e medidas |
-| `PERCENTAGES_SHOULD_BE_FORMATTED…` | 🔵 | `0.0%` | `#,0.0%` |
+| `PERCENTAGES_SHOULD_BE_FORMATTED…` | 🔵 | `0.0%` | `#,0.0%;-#,0.0%;#,0.0%` |
+| `REMOVE_UNNECESSARY_COLUMNS` | 🔵 | `vl_preco_fabricacao`, `vl_preco_venda` sem uso | Removidas da fato (seguem no `stg_financeiro`) |
 | `MONTH_(AS_A_STRING)_MUST_BE_SORTED` | 🔵 | — | `nm_mes`, `ct_mes_ano`, `ct_trimestre` com `sortByColumn` |
 
 ### Exceções aceitas (não corrigir)
@@ -74,8 +75,13 @@ Relacionamentos: 5, todos 1:* com filtro único (dimensão → fato), todos ativ
 |---|---|---|
 | `ENSURE_TABLES_HAVE_RELATIONSHIPS` | `Medidas`, `pc_dimensao_analise` | Tabela de medidas e parâmetro de campo são desconectados por definição |
 | `ENSURE_TABLES_HAVE_RELATIONSHIPS` | `ft_metas` | Grão anual; a ligação é feita por `TREATAS` na medida `[Meta Lucro]` |
-| `REMOVE_UNNECESSARY_COLUMNS` | `pc_dimensao_analise[ct_campo_dimensao]` | Coluna exigida pelo parâmetro de campo |
-| `FIRST_LETTER_OF_OBJECTS_MUST_BE_CAPITALIZED` | colunas e tabelas | Conflita com a convenção snake_case do curso; a convenção prevalece |
+| `REMOVE_UNNECESSARY_COLUMNS` | `pc_dimensao_analise[ct_campo_dimensao]`, `Medidas[Medidas]` | Colunas exigidas pelo parâmetro de campo e pela tabela de medidas |
+| `REDUCE_USAGE_OF_CALCULATED_TABLES` | `Medidas`, `pc_dimensao_analise` | Só existem como tabela calculada |
+| `FIRST_LETTER_OF_OBJECTS_MUST_BE_CAPITALIZED` | 12 tabelas e colunas | Conflita com a convenção snake_case do curso; a convenção prevalece |
+| `RELATIONSHIP_COLUMNS_SHOULD_BE_OF_INTEGER_DATA_TYPE` | `fk_data_venda` → `pk_data` | Relacionamento por data é o padrão da tabela calendário (`pk_data` tipo data) |
+| `MINIMIZE_POWER_QUERY_TRANSFORMATIONS` | partições `dim_*` e `ft_financeiro` | Fonte é um Excel, sem DW para levar as transformações; com fonte SQL, mover para views |
+| `HIDE_FACT_TABLE_COLUMNS` | `dim_calendario[nu_ano]` | Falso positivo: `nu_ano` é atributo de segmentação do calendário, não valor de fato |
+| `PERCENTAGES_SHOULD_BE_FORMATTED…` | `[Var % Receita AA]` | Formato com sinal (`+#,0.0%`) para leitura da variação, como recomenda a skill `pbir` |
 
 ## DAX (skill `dax`)
 

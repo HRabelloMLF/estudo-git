@@ -33,7 +33,7 @@ table Medidas
 
 	/// Lucro sobre a receita líquida
 	measure 'Margem %' = DIVIDE ( [Lucro], [Receita Líquida] )
-		formatString: #,0.0%
+		formatString: #,0.0%;-#,0.0%;#,0.0%
 		displayFolder: 02. Resultado
 
 	/// Quantidade de unidades vendidas
@@ -73,7 +73,7 @@ table Medidas
 
 	/// Lucro realizado sobre a meta de lucro
 	measure 'Atingimento Meta %' = DIVIDE ( [Lucro], [Meta Lucro] )
-		formatString: #,0.0%
+		formatString: #,0.0%;-#,0.0%;#,0.0%
 		displayFolder: 05. Metas
 
 	column Medidas
