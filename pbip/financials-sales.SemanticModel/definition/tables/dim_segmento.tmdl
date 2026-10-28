@@ -1,0 +1,30 @@
+/// Dimensão de segmentos de cliente (uma linha por segmento)
+table dim_segmento
+
+	column pk_segmento
+		isKey
+		dataType: int64
+		formatString: 0
+		isHidden
+		isAvailableInMdx: false
+		summarizeBy: none
+		sourceColumn: pk_segmento
+
+	/// Segmento de cliente
+	column nm_segmento
+		dataType: string
+		summarizeBy: none
+		sourceColumn: nm_segmento
+
+	partition dim_segmento = m
+		mode: import
+		queryGroup: Dimensões
+		source =
+				let
+					Source = stg_financeiro,
+					segmentosDistintos = Table.Distinct(Table.SelectColumns(Source, {"nm_segmento"})),
+					segmentosOrdenados = Table.Sort(segmentosDistintos, {{"nm_segmento", Order.Ascending}}),
+					chaveAdicionada = Table.AddIndexColumn(segmentosOrdenados, "pk_segmento", 1, 1, Int64.Type),
+					colunasReordenadas = Table.ReorderColumns(chaveAdicionada, {"pk_segmento", "nm_segmento"})
+				in
+					colunasReordenadas

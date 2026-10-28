@@ -1,0 +1,126 @@
+/// Fato de vendas. Grão: uma linha por produto, país, segmento e mês de venda
+table ft_financeiro
+
+	column fk_data_venda
+		dataType: dateTime
+		formatString: Short Date
+		isHidden
+		isAvailableInMdx: false
+		summarizeBy: none
+		sourceColumn: fk_data_venda
+
+	column fk_produto
+		dataType: int64
+		formatString: 0
+		isHidden
+		isAvailableInMdx: false
+		summarizeBy: none
+		sourceColumn: fk_produto
+
+	column fk_pais
+		dataType: int64
+		formatString: 0
+		isHidden
+		isAvailableInMdx: false
+		summarizeBy: none
+		sourceColumn: fk_pais
+
+	column fk_segmento
+		dataType: int64
+		formatString: 0
+		isHidden
+		isAvailableInMdx: false
+		summarizeBy: none
+		sourceColumn: fk_segmento
+
+	column fk_faixa_desconto
+		dataType: int64
+		formatString: 0
+		isHidden
+		isAvailableInMdx: false
+		summarizeBy: none
+		sourceColumn: fk_faixa_desconto
+
+	column qt_unidades_vendidas
+		dataType: decimal
+		formatString: #,0
+		isHidden
+		isAvailableInMdx: false
+		summarizeBy: none
+		sourceColumn: qt_unidades_vendidas
+
+	column vl_preco_fabricacao
+		dataType: decimal
+		formatString: \$#,0;(\$#,0);\$#,0
+		isHidden
+		isAvailableInMdx: false
+		summarizeBy: none
+		sourceColumn: vl_preco_fabricacao
+
+	column vl_preco_venda
+		dataType: decimal
+		formatString: \$#,0;(\$#,0);\$#,0
+		isHidden
+		isAvailableInMdx: false
+		summarizeBy: none
+		sourceColumn: vl_preco_venda
+
+	column vl_receita_bruta
+		dataType: decimal
+		formatString: \$#,0;(\$#,0);\$#,0
+		isHidden
+		isAvailableInMdx: false
+		summarizeBy: none
+		sourceColumn: vl_receita_bruta
+
+	column vl_desconto
+		dataType: decimal
+		formatString: \$#,0;(\$#,0);\$#,0
+		isHidden
+		isAvailableInMdx: false
+		summarizeBy: none
+		sourceColumn: vl_desconto
+
+	column vl_receita_liquida
+		dataType: decimal
+		formatString: \$#,0;(\$#,0);\$#,0
+		isHidden
+		isAvailableInMdx: false
+		summarizeBy: none
+		sourceColumn: vl_receita_liquida
+
+	column vl_custo
+		dataType: decimal
+		formatString: \$#,0;(\$#,0);\$#,0
+		isHidden
+		isAvailableInMdx: false
+		summarizeBy: none
+		sourceColumn: vl_custo
+
+	column vl_lucro
+		dataType: decimal
+		formatString: \$#,0;(\$#,0);\$#,0
+		isHidden
+		isAvailableInMdx: false
+		summarizeBy: none
+		sourceColumn: vl_lucro
+
+	partition ft_financeiro = m
+		mode: import
+		queryGroup: Fatos
+		source =
+				let
+					Source = stg_financeiro,
+					comProduto = Table.NestedJoin(Source, {"nm_produto"}, dim_produto, {"nm_produto"}, "dimProduto", JoinKind.LeftOuter),
+					chaveProduto = Table.ExpandTableColumn(comProduto, "dimProduto", {"pk_produto"}, {"fk_produto"}),
+					comPais = Table.NestedJoin(chaveProduto, {"nm_pais"}, dim_pais, {"nm_pais"}, "dimPais", JoinKind.LeftOuter),
+					chavePais = Table.ExpandTableColumn(comPais, "dimPais", {"pk_pais"}, {"fk_pais"}),
+					comSegmento = Table.NestedJoin(chavePais, {"nm_segmento"}, dim_segmento, {"nm_segmento"}, "dimSegmento", JoinKind.LeftOuter),
+					chaveSegmento = Table.ExpandTableColumn(comSegmento, "dimSegmento", {"pk_segmento"}, {"fk_segmento"}),
+					comFaixa = Table.NestedJoin(chaveSegmento, {"nm_faixa_desconto"}, dim_faixa_desconto, {"nm_faixa_desconto"}, "dimFaixa", JoinKind.LeftOuter),
+					chaveFaixa = Table.ExpandTableColumn(comFaixa, "dimFaixa", {"pk_faixa_desconto"}, {"fk_faixa_desconto"}),
+					dataRenomeada = Table.RenameColumns(chaveFaixa, {{"dt_venda", "fk_data_venda"}}),
+					colunasSelecionadas = Table.SelectColumns(dataRenomeada, {"fk_data_venda", "fk_produto", "fk_pais", "fk_segmento", "fk_faixa_desconto", "qt_unidades_vendidas", "vl_preco_fabricacao", "vl_preco_venda", "vl_receita_bruta", "vl_desconto", "vl_receita_liquida", "vl_custo", "vl_lucro"}),
+					tiposChaves = Table.TransformColumnTypes(colunasSelecionadas, {{"fk_produto", Int64.Type}, {"fk_pais", Int64.Type}, {"fk_segmento", Int64.Type}, {"fk_faixa_desconto", Int64.Type}})
+				in
+					tiposChaves

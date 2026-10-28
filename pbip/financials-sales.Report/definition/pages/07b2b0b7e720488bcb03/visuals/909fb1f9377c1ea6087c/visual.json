@@ -5,8 +5,8 @@
     "x": 519.85559566787,
     "y": 145.55956678700363,
     "z": 0,
-    "height": 635.95667870036107,
-    "width": 798.84476534296039,
+    "height": 635.9566787003611,
+    "width": 798.8447653429604,
     "tabOrder": 0
   },
   "visual": {
@@ -20,20 +20,35 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "financials"
+                      "Entity": "dim_pais"
                     }
                   },
-                  "Property": "Country"
+                  "Property": "nm_pais"
                 }
               },
-              "queryRef": "financials.Country",
-              "nativeQueryRef": "Country",
-              "active": true
+              "queryRef": "dim_pais.nm_pais",
+              "nativeQueryRef": "nm_pais",
+              "displayName": "País"
             }
           ]
         },
         "Values": {
-          "projections": []
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Medidas"
+                    }
+                  },
+                  "Property": "Receita Líquida"
+                }
+              },
+              "queryRef": "Medidas.Receita Líquida",
+              "nativeQueryRef": "Receita Líquida"
+            }
+          ]
         }
       }
     },
@@ -47,10 +62,10 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "financials"
+                "Entity": "dim_pais"
               }
             },
-            "Property": "Country"
+            "Property": "nm_pais"
           }
         },
         "type": "Categorical"

@@ -1,0 +1,88 @@
+/// Tabela dedicada às medidas do relatório
+table Medidas
+
+	/// Receita antes dos descontos
+	measure 'Receita Bruta' = SUM ( ft_financeiro[vl_receita_bruta] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 01. Receita
+
+	/// Valor total de descontos concedidos
+	measure Descontos = SUM ( ft_financeiro[vl_desconto] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 01. Receita
+
+	/// Receita após descontos
+	measure 'Receita Líquida' = SUM ( ft_financeiro[vl_receita_liquida] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 01. Receita
+
+	/// Média da receita líquida entre os países do contexto
+	measure 'Receita Média por País' = AVERAGEX ( VALUES ( dim_pais[nm_pais] ), [Receita Líquida] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 01. Receita
+
+	/// Custo dos produtos vendidos
+	measure 'Custo (CPV)' = SUM ( ft_financeiro[vl_custo] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 02. Resultado
+
+	/// Lucro bruto (receita líquida menos custo)
+	measure Lucro = SUM ( ft_financeiro[vl_lucro] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 02. Resultado
+
+	/// Lucro sobre a receita líquida
+	measure 'Margem %' = DIVIDE ( [Lucro], [Receita Líquida] )
+		formatString: #,0.0%
+		displayFolder: 02. Resultado
+
+	/// Quantidade de unidades vendidas
+	measure 'Unidades Vendidas' = SUM ( ft_financeiro[qt_unidades_vendidas] )
+		formatString: #,0
+		displayFolder: 03. Volume
+
+	/// Receita líquida por unidade vendida
+	measure 'Preço Médio Unitário' = DIVIDE ( [Receita Líquida], [Unidades Vendidas] )
+		formatString: \$#,0.00
+		displayFolder: 03. Volume
+
+	/// Receita líquida no mesmo período do ano anterior
+	measure 'Receita AA' = CALCULATE ( [Receita Líquida], SAMEPERIODLASTYEAR ( dim_calendario[pk_data] ) )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 04. Tempo
+
+	/// Variação da receita líquida sobre o ano anterior
+	measure 'Var % Receita AA' = ```
+			VAR __Atual = [Receita Líquida]
+			VAR __Anterior = [Receita AA]
+			RETURN
+				IF ( NOT ISBLANK ( __Anterior ), DIVIDE ( __Atual - __Anterior, __Anterior ) )
+			```
+		formatString: +#,0.0%;-#,0.0%;#,0.0%
+		displayFolder: 04. Tempo
+
+	/// Meta de lucro dos anos no contexto
+	measure 'Meta Lucro' = ```
+			CALCULATE (
+				SUM ( ft_metas[vl_meta_lucro] ),
+				TREATAS ( VALUES ( dim_calendario[nu_ano] ), ft_metas[nu_ano] )
+			)
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 05. Metas
+
+	/// Lucro realizado sobre a meta de lucro
+	measure 'Atingimento Meta %' = DIVIDE ( [Lucro], [Meta Lucro] )
+		formatString: #,0.0%
+		displayFolder: 05. Metas
+
+	column Medidas
+		isHidden
+		isAvailableInMdx: false
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Medidas]
+
+	partition Medidas = calculated
+		mode: import
+		source = SELECTCOLUMNS ( { 1 }, "Medidas", ''[Value] )

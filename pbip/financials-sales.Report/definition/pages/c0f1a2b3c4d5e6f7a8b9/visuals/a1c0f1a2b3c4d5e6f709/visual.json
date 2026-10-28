@@ -20,14 +20,14 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "financials"
+                      "Entity": "dim_segmento"
                     }
                   },
-                  "Property": "Segment"
+                  "Property": "nm_segmento"
                 }
               },
-              "queryRef": "financials.Segment",
-              "nativeQueryRef": "Segment",
+              "queryRef": "dim_segmento.nm_segmento",
+              "nativeQueryRef": "nm_segmento",
               "active": true
             }
           ],
@@ -37,10 +37,10 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Parametro Dimensao"
+                      "Entity": "pc_dimensao_analise"
                     }
                   },
-                  "Property": "Parametro Dimensao"
+                  "Property": "ct_dimensao_analise"
                 }
               },
               "index": 0,
@@ -55,14 +55,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Medidas"
+                      "Entity": "Medidas"
                     }
                   },
-                  "Property": "total_lucro"
+                  "Property": "Lucro"
                 }
               },
-              "queryRef": "_Medidas.total_lucro",
-              "nativeQueryRef": "total_lucro",
+              "queryRef": "Medidas.Lucro",
+              "nativeQueryRef": "Lucro",
               "displayName": "Lucro"
             }
           ]
@@ -75,10 +75,10 @@
               "Measure": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "_Medidas"
+                    "Entity": "Medidas"
                   }
                 },
-                "Property": "total_lucro"
+                "Property": "Lucro"
               }
             },
             "direction": "Descending"

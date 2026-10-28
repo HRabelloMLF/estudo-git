@@ -20,14 +20,14 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "financials"
+                      "Entity": "dim_segmento"
                     }
                   },
-                  "Property": "Segment"
+                  "Property": "nm_segmento"
                 }
               },
-              "queryRef": "financials.Segment",
-              "nativeQueryRef": "Segment",
+              "queryRef": "dim_segmento.nm_segmento",
+              "nativeQueryRef": "nm_segmento",
               "displayName": "Segmento",
               "active": true
             }

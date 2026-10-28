@@ -1,0 +1,30 @@
+/// Dimensão de produtos vendidos (uma linha por produto)
+table dim_produto
+
+	column pk_produto
+		isKey
+		dataType: int64
+		formatString: 0
+		isHidden
+		isAvailableInMdx: false
+		summarizeBy: none
+		sourceColumn: pk_produto
+
+	/// Nome do produto
+	column nm_produto
+		dataType: string
+		summarizeBy: none
+		sourceColumn: nm_produto
+
+	partition dim_produto = m
+		mode: import
+		queryGroup: Dimensões
+		source =
+				let
+					Source = stg_financeiro,
+					produtosDistintos = Table.Distinct(Table.SelectColumns(Source, {"nm_produto"})),
+					produtosOrdenados = Table.Sort(produtosDistintos, {{"nm_produto", Order.Ascending}}),
+					chaveAdicionada = Table.AddIndexColumn(produtosOrdenados, "pk_produto", 1, 1, Int64.Type),
+					colunasReordenadas = Table.ReorderColumns(chaveAdicionada, {"pk_produto", "nm_produto"})
+				in
+					colunasReordenadas

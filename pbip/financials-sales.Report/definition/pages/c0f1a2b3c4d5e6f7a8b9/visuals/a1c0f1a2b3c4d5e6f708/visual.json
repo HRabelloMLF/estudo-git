@@ -20,14 +20,15 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "financials"
+                      "Entity": "dim_pais"
                     }
                   },
-                  "Property": "Country"
+                  "Property": "nm_pais"
                 }
               },
-              "queryRef": "financials.Country",
-              "nativeQueryRef": "Country",
+              "queryRef": "dim_pais.nm_pais",
+              "nativeQueryRef": "nm_pais",
+              "displayName": "País",
               "active": true
             }
           ]
@@ -39,14 +40,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Medidas"
+                      "Entity": "Medidas"
                     }
                   },
-                  "Property": "total_lucro"
+                  "Property": "Lucro"
                 }
               },
-              "queryRef": "_Medidas.total_lucro",
-              "nativeQueryRef": "total_lucro",
+              "queryRef": "Medidas.Lucro",
+              "nativeQueryRef": "Lucro",
               "displayName": "Lucro"
             }
           ]
@@ -59,10 +60,10 @@
               "Measure": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "_Medidas"
+                    "Entity": "Medidas"
                   }
                 },
-                "Property": "total_lucro"
+                "Property": "Lucro"
               }
             },
             "direction": "Descending"
@@ -313,7 +314,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Lucro por país, do maior para o menor'"
+                  "Value": "'França lidera o lucro, seguida de perto por Alemanha e Canadá'"
                 }
               }
             },

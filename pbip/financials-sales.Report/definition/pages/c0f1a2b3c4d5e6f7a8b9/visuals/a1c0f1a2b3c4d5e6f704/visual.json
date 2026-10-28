@@ -20,14 +20,14 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "dCalendario"
+                      "Entity": "dim_calendario"
                     }
                   },
-                  "Property": "Ano"
+                  "Property": "nu_ano"
                 }
               },
-              "queryRef": "dCalendario.Ano",
-              "nativeQueryRef": "Ano",
+              "queryRef": "dim_calendario.nu_ano",
+              "nativeQueryRef": "nu_ano",
               "displayName": "Ano",
               "active": true
             }

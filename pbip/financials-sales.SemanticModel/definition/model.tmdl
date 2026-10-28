@@ -8,18 +8,45 @@ model Model
 		legacyRedirects
 		returnErrorValuesAsNull
 
+queryGroup Caminhos
+
+	annotation PBI_QueryGroupOrder = 0
+
+queryGroup Funções
+
+	annotation PBI_QueryGroupOrder = 1
+
+queryGroup Fontes
+
+	annotation PBI_QueryGroupOrder = 2
+
+queryGroup Staging
+
+	annotation PBI_QueryGroupOrder = 3
+
+queryGroup Dimensões
+
+	annotation PBI_QueryGroupOrder = 4
+
+queryGroup Fatos
+
+	annotation PBI_QueryGroupOrder = 5
+
 annotation __PBI_TimeIntelligenceEnabled = 0
 
-annotation PBI_QueryOrder = ["financials"]
+annotation PBI_QueryOrder = ["path_arquivo_financeiro","fx_gera_calendario","src_financeiro","stg_financeiro","dim_calendario","dim_produto","dim_pais","dim_segmento","dim_faixa_desconto","ft_financeiro","ft_metas"]
 
 annotation PBI_ProTooling = ["DevMode"]
 
-ref table financials
-ref table dCalendario
-ref table _Medidas
-ref table cgTempo
-ref table 'Parametro Dimensao'
-ref table 'Metas Anuais'
+ref table ft_financeiro
+ref table ft_metas
+ref table dim_calendario
+ref table dim_produto
+ref table dim_pais
+ref table dim_segmento
+ref table dim_faixa_desconto
+ref table Medidas
+ref table gc_inteligencia_tempo
+ref table pc_dimensao_analise
 
 ref cultureInfo pt-BR
-

@@ -1,0 +1,40 @@
+/// Parâmetro de campo: troca a dimensão dos gráficos entre segmento, país e produto
+table pc_dimensao_analise
+
+	/// Dimensão escolhida para a análise
+	column ct_dimensao_analise
+		dataType: string
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: nu_ordem_dimensao
+
+		relatedColumnDetails
+			groupByColumn: ct_campo_dimensao
+
+	column ct_campo_dimensao
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: nu_ordem_dimensao
+
+		extendedProperty ParameterMetadata =
+				{
+				"version": 3,
+				"kind": 2
+				}
+
+	column nu_ordem_dimensao
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: [Value3]
+
+	partition pc_dimensao_analise = calculated
+		mode: import
+		source =
+				{
+					("Segmento", NAMEOF ( 'dim_segmento'[nm_segmento] ), 0),
+					("País", NAMEOF ( 'dim_pais'[nm_pais] ), 1),
+					("Produto", NAMEOF ( 'dim_produto'[nm_produto] ), 2)
+				}

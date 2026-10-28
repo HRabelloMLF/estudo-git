@@ -20,14 +20,14 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Parametro Dimensao"
+                      "Entity": "pc_dimensao_analise"
                     }
                   },
-                  "Property": "Parametro Dimensao"
+                  "Property": "ct_dimensao_analise"
                 }
               },
-              "queryRef": "Parametro Dimensao.Parametro Dimensao",
-              "nativeQueryRef": "Parametro Dimensao",
+              "queryRef": "pc_dimensao_analise.ct_dimensao_analise",
+              "nativeQueryRef": "ct_dimensao_analise",
               "displayName": "Analisar por",
               "active": true
             }
@@ -140,7 +140,7 @@
                 "From": [
                   {
                     "Name": "p",
-                    "Entity": "Parametro Dimensao",
+                    "Entity": "pc_dimensao_analise",
                     "Type": 0
                   }
                 ],
@@ -156,7 +156,7 @@
                                   "Source": "p"
                                 }
                               },
-                              "Property": "Parametro Dimensao"
+                              "Property": "ct_dimensao_analise"
                             }
                           }
                         ],

@@ -1,0 +1,71 @@
+/// Calendário diário contínuo dos anos com vendas; base de toda inteligência de tempo
+table dim_calendario
+	dataCategory: Time
+
+	/// Data (chave do calendário)
+	column pk_data
+		isKey
+		dataType: dateTime
+		formatString: Short Date
+		summarizeBy: none
+		sourceColumn: pk_data
+
+	/// Ano
+	column nu_ano
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: nu_ano
+
+	column nu_mes
+		dataType: int64
+		formatString: 0
+		isHidden
+		summarizeBy: none
+		sourceColumn: nu_mes
+
+	/// Mês abreviado (jan, fev...)
+	column nm_mes
+		dataType: string
+		summarizeBy: none
+		sourceColumn: nm_mes
+		sortByColumn: nu_mes
+
+	column nu_ano_mes
+		dataType: int64
+		formatString: 0
+		isHidden
+		summarizeBy: none
+		sourceColumn: nu_ano_mes
+
+	/// Mês e ano (jan/14)
+	column ct_mes_ano
+		dataType: string
+		summarizeBy: none
+		sourceColumn: ct_mes_ano
+		sortByColumn: nu_ano_mes
+
+	column nu_trimestre
+		dataType: int64
+		formatString: 0
+		isHidden
+		summarizeBy: none
+		sourceColumn: nu_trimestre
+
+	/// Trimestre (T1 a T4)
+	column ct_trimestre
+		dataType: string
+		summarizeBy: none
+		sourceColumn: ct_trimestre
+		sortByColumn: nu_trimestre
+
+	partition dim_calendario = m
+		mode: import
+		queryGroup: Dimensões
+		source =
+				let
+					__DataInicial = #date(Date.Year(List.Min(stg_financeiro[dt_venda])), 1, 1),
+					__DataFinal = #date(Date.Year(List.Max(stg_financeiro[dt_venda])), 12, 31),
+					Source = fx_gera_calendario(__DataInicial, __DataFinal)
+				in
+					Source

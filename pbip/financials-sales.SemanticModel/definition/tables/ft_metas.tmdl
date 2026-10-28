@@ -1,0 +1,27 @@
+/// Fato de metas de lucro definidas pela diretoria. Grão: uma linha por ano
+table ft_metas
+
+	column nu_ano
+		dataType: int64
+		formatString: 0
+		isHidden
+		isAvailableInMdx: false
+		summarizeBy: none
+		sourceColumn: nu_ano
+
+	column vl_meta_lucro
+		dataType: decimal
+		formatString: \$#,0;(\$#,0);\$#,0
+		isHidden
+		isAvailableInMdx: false
+		summarizeBy: none
+		sourceColumn: vl_meta_lucro
+
+	partition ft_metas = m
+		mode: import
+		queryGroup: Fatos
+		source =
+				let
+					Source = #table(type table [nu_ano = Int64.Type, vl_meta_lucro = Currency.Type], {{2013, 3800000}, {2014, 14000000}})
+				in
+					Source

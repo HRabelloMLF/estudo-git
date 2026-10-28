@@ -20,14 +20,14 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "financials"
+                      "Entity": "dim_produto"
                     }
                   },
-                  "Property": "Product"
+                  "Property": "nm_produto"
                 }
               },
-              "queryRef": "financials.Product",
-              "nativeQueryRef": "Product",
+              "queryRef": "dim_produto.nm_produto",
+              "nativeQueryRef": "nm_produto",
               "displayName": "Produto"
             }
           ]
@@ -39,14 +39,15 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "cgTempo"
+                      "Entity": "gc_inteligencia_tempo"
                     }
                   },
-                  "Property": "Período"
+                  "Property": "ct_periodo"
                 }
               },
-              "queryRef": "cgTempo.Período",
-              "nativeQueryRef": "Período"
+              "queryRef": "gc_inteligencia_tempo.ct_periodo",
+              "nativeQueryRef": "ct_periodo",
+              "displayName": "Período"
             }
           ]
         },
@@ -57,13 +58,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Medidas"
+                      "Entity": "Medidas"
                     }
                   },
                   "Property": "Receita Líquida"
                 }
               },
-              "queryRef": "_Medidas.Receita Líquida",
+              "queryRef": "Medidas.Receita Líquida",
               "nativeQueryRef": "Receita Líquida"
             }
           ]
@@ -227,7 +228,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Receita por produto: atual, acumulado no ano e ano anterior'"
+                  "Value": "'Paseo lidera a receita: atual, acumulado no ano e ano anterior'"
                 }
               }
             },
