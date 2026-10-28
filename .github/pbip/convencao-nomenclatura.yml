@@ -1,0 +1,218 @@
+# =============================================================================
+# Convenção de nomenclatura para modelos semânticos PBIP (formato TMDL)
+# -----------------------------------------------------------------------------
+# Lido por: .github/scripts/validar_nomenclatura.py
+# Executado em: .github/workflows/pbip-validacao.yml
+#
+# Base: convenção do curso descrita na skill power-query-m
+#       (references/nomenclatura.md), com a tabela "Medidas" da skill dax.
+#   - Tabelas e queries .... snake_case com prefixo  -> ft_vendas, dim_cliente
+#   - Colunas .............. snake_case com prefixo de natureza -> vl_salario
+#   - Chaves ............... pk_ (lado 1) / fk_ (lado muitos, oculta)
+#   - Medidas .............. livre, com espaço -> [Total Vendas]
+#   - Etapas do M .......... camelCase -> tiposAjustados
+#   - Sem acentuação e sem espaços em tabelas, queries e colunas
+#
+# Referências da comunidade:
+#   - SQLBI – DAX Naming Conventions  https://docs.sqlbi.com/dax-style/dax-naming-conventions
+#   - Regras BPA da Microsoft         https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules
+#
+# Cada regra tem:
+#   padrao      -> expressão regular (sintaxe Python) que o nome deve seguir
+#   severidade  -> "erro" (bloqueia o PR) ou "aviso" (só sinaliza)
+#   exemplo     -> aparece na mensagem para orientar quem corrigir
+# =============================================================================
+
+versao: 2
+
+# Trecho reutilizado nos padrões: palavras minúsculas sem acento separadas por "_"
+# (YAML anchors: &nome define, *nome reutiliza)
+_snake: &snake '[a-z0-9]+(_[a-z0-9]+)*$'
+
+# -----------------------------------------------------------------------------
+# Regras que valem para TODOS os objetos
+# -----------------------------------------------------------------------------
+geral:
+  # Espaço no início/fim, espaço duplo, tab ou quebra de linha no nome
+  proibir_espacos_irregulares:
+    severidade: erro
+  # Caracteres que quebram referências DAX/M
+  caracteres_proibidos:
+    severidade: erro
+    lista: ['[', ']', '{', '}', '"', '|', '\', ';', '<', '>', '`']
+  # Nomes padrão que o Power BI gera e ninguém renomeou
+  nomes_genericos:
+    severidade: erro
+    padroes:
+      - '^(Column|Coluna|Table|Tabela|Query|Consulta|Measure|Medida)\s?\d*$'
+      - '^(Custom|Personalizar)(\.\d+)?$'
+
+# -----------------------------------------------------------------------------
+# Tabelas carregadas no modelo
+# A classificação é feita pela ESTRUTURA da tabela:
+#   grupo_calculo      -> tem bloco "calculationGroup"
+#   parametro_campo    -> tem coluna com extendedProperty ParameterMetadata
+#   parametro_numerico -> tabela calculada com GENERATESERIES (parâmetro "e se")
+#   medidas            -> só tem medidas (colunas todas ocultas)
+# As demais são classificadas pelo PREFIXO (lista "prefixos").
+# -----------------------------------------------------------------------------
+tabelas:
+  prefixos:
+    fato:      { prefixo: 'ft_',  exemplo: ft_vendas,             grupo: Fatos }
+    dimensao:  { prefixo: 'dim_', exemplo: dim_cliente,           grupo: Dimensões }
+    auxiliar:  { prefixo: 'aux_', exemplo: aux_ordem_meses,       grupo: Auxiliares }
+    auditoria: { prefixo: 'aud_', exemplo: aud_linhas_rejeitadas, grupo: Auditoria }
+    rls:       { prefixo: 'rls_', exemplo: rls_colaborador,       grupo: RLS }
+    view:      { prefixo: 'vw_',  exemplo: vw_vendas,             grupo: Fontes }
+  # Parte do nome depois do prefixo (snake_case, sem acento)
+  sufixo: *snake
+  medidas:
+    # Skill dax: tabela calculada vazia "Medidas" concentra todas as medidas
+    padrao: '^Medidas$'
+    exemplo: Medidas
+    severidade: erro
+  parametro_campo:
+    prefixo: 'pc_'
+    exemplo: pc_metrica
+    severidade: erro
+  parametro_numerico:
+    prefixo: 'par_'
+    exemplo: par_desconto
+    severidade: erro
+  grupo_calculo:
+    prefixo: 'gc_'
+    exemplo: gc_inteligencia_tempo
+    severidade: erro
+  # src_ e stg_ são camadas intermediárias: "Habilitar carga" deve estar desmarcado
+  nao_carregar:
+    prefixos: ['src_', 'stg_']
+    severidade: erro
+  sem_classificacao:
+    severidade: erro
+  # LocalDateTable_* / DateTableTemplate_* => "Data/hora automática" ligada
+  proibir_data_automatica:
+    severidade: erro
+  # Tabelas ignoradas por nome (legado em análise de impacto, por exemplo)
+  ignorar: []
+
+# -----------------------------------------------------------------------------
+# Queries que não carregam (expressions.tmdl): parâmetros, caminhos, funções...
+# -----------------------------------------------------------------------------
+queries:
+  parametro:
+    # Parâmetros do Power Query (meta [IsParameterQuery=true])
+    prefixos: ['par_', 'path_']
+    exemplo: par_data_inicial
+    # Nomes fixos exigidos pelo Incremental Refresh
+    excecoes: ['RangeStart', 'RangeEnd']
+    severidade: erro
+  funcao:
+    prefixos: ['fx_']
+    exemplo: fx_limpa_texto
+    severidade: erro
+  outras:
+    prefixos: ['path_', 'par_', 'fx_', 'dic_', 'src_', 'vw_', 'stg_', 'aux_', 'dim_', 'ft_', 'aud_', 'rls_']
+    exemplo: stg_vendas_tratado
+    severidade: erro
+  # Pasta (queryGroup) esperada para cada prefixo, na ordem do painel:
+  # Caminhos → Parâmetros → Funções → Dicionários → Fontes → Staging →
+  # Auxiliares → Dimensões → Fatos → Auditoria → RLS
+  grupos:
+    severidade: aviso
+    por_prefixo:
+      path_: Caminhos
+      par_:  Parâmetros
+      fx_:   Funções
+      dic_:  Dicionários
+      src_:  Fontes
+      vw_:   Fontes
+      stg_:  Staging
+      aux_:  Auxiliares
+      dim_:  Dimensões
+      ft_:   Fatos
+      aud_:  Auditoria
+      rls_:  RLS
+  # Etapas do M: camelCase descritivo ("tiposAjustados"), variáveis internas
+  # com "__" (__DataCorte, __listaClientes). Única exceção: Source.
+  etapas:
+    padrao: '^([a-z][A-Za-z0-9]*|__[A-Za-z][A-Za-z0-9]*)$'
+    excecoes: ['Source']
+    exemplo: filtradoPorData
+    severidade: aviso
+
+# -----------------------------------------------------------------------------
+# Colunas — snake_case com prefixo de natureza
+# -----------------------------------------------------------------------------
+colunas:
+  padrao: '^(pk|fk|cd|dt|ds|nu|nm|qt|vl|pc|fl|ac|ct)_[a-z0-9]+(_[a-z0-9]+)*$'
+  exemplo: vl_preco_unitario
+  severidade: erro
+  # pk_ chave primária · fk_ chave estrangeira · cd_ código · dt_ data
+  # ds_ descrição · nu_ número · nm_ nome · qt_ quantidade · vl_ valor (moeda)
+  # pc_ percentual · fl_ flag · ac_ sigla · ct_ categórica
+
+  # Prefixo coerente com o tipo de dado do TMDL
+  tipos:
+    severidade: erro
+    regras:
+      dt_: ['dateTime']   # ano/mês numéricos são nu_, nome do mês é nm_
+      fl_: ['boolean']    # 0/1 da fonte deve virar lógico
+      vl_: ['decimal', 'double', 'int64']
+      qt_: ['decimal', 'double', 'int64']
+      pc_: ['decimal', 'double']
+      nu_: ['int64', 'decimal', 'double']
+  # Relacionamentos: lado 1 = pk_, lado muitos = fk_ (sempre oculta)
+  chaves:
+    severidade: erro
+  # Tabela calendário marcada como tabela de datas, com chave pk_data
+  calendario:
+    tabelas: ['dim_calendario']
+    coluna_chave: pk_data
+    severidade: aviso
+
+# -----------------------------------------------------------------------------
+# Grupos de cálculo
+# -----------------------------------------------------------------------------
+grupo_calculo:
+  coluna:
+    # Coluna exibida no visual: categórica
+    padrao: '^ct_[a-z0-9]+(_[a-z0-9]+)*$'
+    exemplo: ct_periodo
+    severidade: erro
+  itens:
+    # Itens aparecem para o usuário: nome amigável, como medida
+    padrao: '^[A-ZÀ-Ý%Δ][\wÀ-ÿ%$#()/.\-]*( [\wÀ-ÿ%$#()/.\-]+)*$'
+    exemplo: Ano Anterior
+    severidade: erro
+  # Dois grupos com a mesma precedência geram resultado imprevisível
+  precedencia_unica:
+    severidade: erro
+
+# -----------------------------------------------------------------------------
+# Parâmetros de campo
+# -----------------------------------------------------------------------------
+parametro_campo:
+  # Evita pc_metrica[pc_metrica], que parece percentual
+  coluna:
+    padrao: '^ct_[a-z0-9]+(_[a-z0-9]+)*$'
+    exemplo: ct_metrica
+    severidade: erro
+
+# -----------------------------------------------------------------------------
+# Medidas — nome de negócio, livre, com espaço
+# -----------------------------------------------------------------------------
+medidas:
+  padrao: '^[A-ZÀ-Ý0-9%#Δ][\wÀ-ÿ%$#()/.\-]*( [\wÀ-ÿ%$#()/.\-]+)*$'
+  exemplo: Total Vendas
+  severidade: erro
+  # Medida com cara de coluna (snake_case ou prefixo técnico como med_)
+  proibir_cara_de_coluna:
+    padrao: '^[a-z]+_'
+    severidade: erro
+  # Medidas fora da tabela Medidas
+  exigir_tabela_medidas:
+    severidade: aviso
+  exigir_format_string:
+    severidade: aviso
+  exigir_display_folder:
+    severidade: aviso
