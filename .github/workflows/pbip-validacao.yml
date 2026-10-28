@@ -1,0 +1,138 @@
+# =============================================================================
+# Pipeline de validação de projetos Power BI (.pbip)
+# -----------------------------------------------------------------------------
+# Job 1 - nomenclatura  : regras em .github/pbip/convencao-nomenclatura.yml,
+#                         baseadas na convenção da skill power-query-m
+#                         (tabelas, colunas, chaves, parâmetros de campo,
+#                         auxiliares, grupos de cálculo, medidas, queries M).
+#                         BLOQUEIA o PR em erro.
+# Job 2 - boas-praticas : Best Practice Analyzer (BPA) do Tabular Editor 2 com
+#                         as regras oficiais da Microsoft (performance, DAX,
+#                         formatação). Começa apenas INFORMATIVO.
+#
+# Referências da comunidade:
+#   - Tabular Editor 2 (CLI)   https://github.com/TabularEditor/TabularEditor
+#   - Regras BPA da Microsoft  https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules
+#   - BPA no GitHub Actions    https://fabricatedinsights.substack.com/p/building-your-power-bi-cicd-pipeline-7f9
+# =============================================================================
+
+name: Validação PBIP
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '**/*.SemanticModel/**'
+      - '**/*.Report/**'
+      - '.github/pbip/**'
+      - '.github/scripts/validar_nomenclatura.py'
+      - '.github/workflows/pbip-validacao.yml'
+  push:
+    branches: [main]
+    paths:
+      - '**/*.SemanticModel/**'
+      - '**/*.Report/**'
+      - '.github/pbip/**'
+      - '.github/scripts/validar_nomenclatura.py'
+      - '.github/workflows/pbip-validacao.yml'
+  workflow_dispatch:
+    inputs:
+      estrito:
+        description: 'Tratar avisos de nomenclatura como erro'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pbip-validacao-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Versão fixa para o pipeline não quebrar sozinho quando sair release nova
+  TABULAR_EDITOR_VERSAO: '2.29.0'
+  BPA_REGRAS_URL: 'https://raw.githubusercontent.com/microsoft/Analysis-Services/master/BestPracticeRules/BPARules.json'
+  # Mude para 'true' quando o modelo estiver limpo e o BPA puder bloquear PRs
+  BPA_BLOQUEANTE: 'false'
+
+jobs:
+  nomenclatura:
+    name: Convenção de nomenclatura
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependências
+        run: pip install pyyaml==6.0.2
+
+      - name: Validar nomenclatura do modelo semântico
+        run: |
+          python .github/scripts/validar_nomenclatura.py \
+            --config .github/pbip/convencao-nomenclatura.yml \
+            --raiz . \
+            ${{ inputs.estrito && '--estrito' || '' }}
+
+  boas-praticas:
+    name: Best Practice Analyzer (Tabular Editor 2)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Baixar Tabular Editor 2 (portátil)
+        shell: pwsh
+        run: |
+          $url = "https://github.com/TabularEditor/TabularEditor/releases/download/$env:TABULAR_EDITOR_VERSAO/TabularEditor.Portable.zip"
+          Invoke-WebRequest -Uri $url -OutFile TabularEditor.zip
+          Expand-Archive TabularEditor.zip -DestinationPath "$env:RUNNER_TEMP\TabularEditor"
+
+      - name: Rodar BPA em cada modelo semântico
+        shell: pwsh
+        run: |
+          $te = "$env:RUNNER_TEMP\TabularEditor\TabularEditor.exe"
+          $modelos = Get-ChildItem -Recurse -Directory -Filter '*.SemanticModel'
+          if (-not $modelos) { Write-Output 'Nenhum *.SemanticModel encontrado.'; exit 0 }
+
+          $totalErros = 0
+          "## Best Practice Analyzer`n" | Out-File $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+
+          foreach ($modelo in $modelos) {
+            # TMDL: pasta definition | TMSL (legado): model.bim
+            $alvo = Join-Path $modelo.FullName 'definition'
+            if (-not (Test-Path $alvo)) { $alvo = Join-Path $modelo.FullName 'model.bim' }
+
+            Write-Output "::group::BPA - $($modelo.Name)"
+            $saida = Join-Path $env:RUNNER_TEMP "bpa-$($modelo.BaseName).txt"
+            # -A <regras> : roda o BPA | -G : saída como anotações do GitHub Actions
+            $p = Start-Process -FilePath $te `
+                   -ArgumentList "`"$alvo`" -A `"$env:BPA_REGRAS_URL`" -G" `
+                   -NoNewWindow -Wait -PassThru -RedirectStandardOutput $saida
+            Get-Content $saida
+            Write-Output '::endgroup::'
+
+            $erros  = (Select-String -Path $saida -Pattern '^::error'   -AllMatches).Count
+            $avisos = (Select-String -Path $saida -Pattern '^::warning' -AllMatches).Count
+            $totalErros += $erros
+            "- **$($modelo.Name)**: $erros erro(s), $avisos aviso(s) (exit code $($p.ExitCode))" |
+              Out-File $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          }
+
+          if ($totalErros -gt 0 -and $env:BPA_BLOQUEANTE -eq 'true') {
+            Write-Output "::error::BPA encontrou $totalErros violação(ões) de severidade 3."
+            exit 1
+          }
+
+      - name: Publicar saída do BPA
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bpa-resultados
+          path: ${{ runner.temp }}/bpa-*.txt
+          if-no-files-found: ignore
