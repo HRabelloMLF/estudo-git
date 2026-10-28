@@ -1,0 +1,33 @@
+/// Variantes temporais de qualquer medida (Atual, YTD, Ano Anterior, variação)
+table cgTempo
+
+	calculationGroup
+		precedence: 10
+
+		calculationItem Atual = SELECTEDMEASURE ()
+
+		calculationItem YTD = CALCULATE ( SELECTEDMEASURE (), DATESYTD ( dCalendario[Data] ) )
+
+		calculationItem 'Ano Anterior' = CALCULATE ( SELECTEDMEASURE (), SAMEPERIODLASTYEAR ( dCalendario[Data] ) )
+
+		calculationItem var_aa = ```
+				VAR __Atual = SELECTEDMEASURE ()
+				VAR __Anterior = CALCULATE ( SELECTEDMEASURE (), SAMEPERIODLASTYEAR ( dCalendario[Data] ) )
+				RETURN
+					IF ( NOT ISBLANK ( __Anterior ), DIVIDE ( __Atual - __Anterior, __Anterior ) )
+				```
+			formatStringDefinition = "+0.0%;-0.0%;0.0%"
+
+	column Período
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Name
+		sortByColumn: Ordinal
+
+	column Ordinal
+		dataType: int64
+		isHidden
+		summarizeBy: sum
+		sourceColumn: Ordinal
+
+	partition cgTempo = calculationGroup

@@ -1,0 +1,72 @@
+table dCalendario
+	dataCategory: Time
+
+	measure 'Dias no Periodo' = COUNTROWS ( dCalendario )
+		formatString: #,0
+
+	column Data
+		isKey
+		dataType: dateTime
+		formatString: Short Date
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Data]
+
+	column Ano
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Ano]
+
+	column mes_numero
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [mes_numero]
+
+	column MesNome
+		dataType: string
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [MesNome]
+		sortByColumn: mes_numero
+
+	column AnoMes
+		dataType: int64
+		formatString: 0
+		isHidden
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [AnoMes]
+
+	column 'Mes Ano'
+		dataType: string
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Mes Ano]
+		sortByColumn: AnoMes
+
+	column Trimestre
+		dataType: string
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Trimestre]
+
+	partition dCalendario = calculated
+		mode: import
+		source = ```
+				VAR __Datas =
+					SELECTCOLUMNS ( CALENDAR ( DATE ( 2013, 1, 1 ), DATE ( 2014, 12, 31 ) ), "Data", [Date] )
+				RETURN
+					ADDCOLUMNS (
+						__Datas,
+						"Ano", YEAR ( [Data] ),
+						"mes_numero", MONTH ( [Data] ),
+						"MesNome", FORMAT ( [Data], "mmm" ),
+						"AnoMes", YEAR ( [Data] ) * 100 + MONTH ( [Data] ),
+						"Mes Ano", FORMAT ( [Data], "mmm/yy" ),
+						"Trimestre", "T" & QUARTER ( [Data] )
+					)
+				```

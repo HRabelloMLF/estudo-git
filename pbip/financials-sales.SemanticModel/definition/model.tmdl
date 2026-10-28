@@ -1,0 +1,25 @@
+model Model
+	culture: pt-BR
+	discourageImplicitMeasures
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: pt-BR
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["financials"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table financials
+ref table dCalendario
+ref table _Medidas
+ref table cgTempo
+ref table 'Parametro Dimensao'
+ref table 'Metas Anuais'
+
+ref cultureInfo pt-BR
+

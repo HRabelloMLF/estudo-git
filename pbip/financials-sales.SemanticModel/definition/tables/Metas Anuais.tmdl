@@ -1,0 +1,26 @@
+/// Metas anuais de lucro definidas pela diretoria da Contoso Finance
+table 'Metas Anuais'
+
+	column Ano
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Ano]
+
+	column 'Meta Lucro'
+		dataType: double
+		formatString: \$#,0;(\$#,0);\$#,0
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Meta Lucro]
+
+	partition 'Metas Anuais' = calculated
+		mode: import
+		source = ```
+				DATATABLE (
+					"Ano", INTEGER,
+					"Meta Lucro", DOUBLE,
+					{ { 2013, 3800000 }, { 2014, 14000000 } }
+				)
+				```

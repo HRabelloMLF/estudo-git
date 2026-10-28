@@ -1,0 +1,74 @@
+table _Medidas
+
+	/// Receita líquida (Sales) após descontos.
+	measure 'Receita Líquida' = SUM ( financials[Sales] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 01. Receita
+
+	measure 'Receita Bruta' = SUM ( financials[Gross Sales] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 01. Receita
+
+	measure Descontos = SUM ( financials[Discounts] )
+		formatString: \$#,0;(\$#,0);\$#,0
+
+	measure 'Custo (CPV)' = SUM ( financials[COGS] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 02. Resultado
+
+	measure total_lucro = SUM ( financials[Profit] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 02. Resultado
+
+	measure 'Margem %' = DIVIDE ( [total_lucro], [Receita Líquida] )
+		formatString: 0.0%
+		displayFolder: 02. Resultado
+
+	measure 'Unidades Vendidas' = SUM ( financials[Units Sold] )
+		displayFolder: 03. Volume
+
+	measure med_preco_medio = DIVIDE ( [Receita Líquida], [Unidades Vendidas] )
+		formatString: \$#,0.00
+		displayFolder: 03. Volume
+
+	measure 'Receita  por Pais' = DIVIDE ( [Receita Líquida], DISTINCTCOUNT ( financials[Country] ) )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 01. Receita
+
+	measure 'Receita AA' = CALCULATE ( [Receita Líquida], SAMEPERIODLASTYEAR ( dCalendario[Data] ) )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 04. Tempo
+
+	measure 'Var % AA' = ```
+			VAR __Atual = [Receita Líquida]
+			VAR __Anterior = [Receita AA]
+			RETURN
+				IF ( NOT ISBLANK ( __Anterior ), DIVIDE ( __Atual - __Anterior, __Anterior ) )
+			```
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 04. Tempo
+
+	measure 'Meta Lucro' = ```
+			CALCULATE (
+				SUM ( 'Metas Anuais'[Meta Lucro] ),
+				TREATAS ( VALUES ( dCalendario[Ano] ), 'Metas Anuais'[Ano] )
+			)
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 05. Metas
+
+	measure 'Atingimento Meta %' = DIVIDE ( [total_lucro], [Meta Lucro] )
+		formatString: 0.0%
+		displayFolder: 05. Metas
+
+	column _Medidas
+		isHidden
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [_Medidas]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition _Medidas = calculated
+		mode: import
+		source = SELECTCOLUMNS ( { 1 }, "_Medidas", ''[Value] )
